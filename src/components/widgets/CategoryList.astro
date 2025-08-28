@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content'
+
+const allPosts = await getCollection('posts')
+const categories = [...new Set(allPosts.map((post) => post.data.category).filter(Boolean))].sort()
+const BaseURL = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`
+---
+
+<div class="category-list">
+  <ul>
+    {
+      categories.length > 0 ? (
+        categories.map((category) => (
+          <li>
+            <a href={`${BaseURL}category/${category}`}>/{category}</a>
+          </li>
+        ))
+      ) : (
+        <li>No categories found.</li>
+      )
+    }
+  </ul>
+</div>
+
+<style>
+  .category-list ul {
+    list-style: none;
+    padding: 0;
+  }
+  .category-list li {
+    margin-bottom: 0.5em;
+  }
+  .category-list a {
+    text-decoration: none;
+    color: var(--theme-text-color);
+    padding: 0.2em 0.5em;
+    border: 1px solid var(--theme-border-color);
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+  }
+  .category-list a:hover {
+    background-color: var(--theme-hover-bg);
+  }
+</style>

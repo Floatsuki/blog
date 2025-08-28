@@ -6,6 +6,9 @@ import type { BaseHeadProps } from '@/types/component.types'
 import 'katex/dist/katex.min.css'
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+const BaseURL = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`
 
 const { title, description, ogImage } = Astro.props as BaseHeadProps
 const imageUrl = ogImage ? new URL(ogImage, Astro.url) : new URL('/og/chiri-og.png', Astro.url)
@@ -14,22 +17,17 @@ const imageUrl = ogImage ? new URL(ogImage, Astro.url) : new URL('/og/chiri-og.p
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-<link rel="preload" href="/fonts/Inter.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-<link
-  rel="preload"
-  href="/fonts/Besley-Italic.woff2"
-  as="font"
-  type="font/woff2"
-  crossorigin="anonymous"
-/>
-<link rel="sitemap" href="/sitemap-index.xml" />
+<link rel="icon" type="image/svg+xml" href=`${BaseURL}favicon.svg` />
+<link rel="apple-touch-icon" href=`${BaseURL}apple-touch-icon.png` />
+<link rel="preload" href="https://fontsapi.zeoseven.com/19/main/result.css" as="style" />
+<link rel="preload" href="https://fontsapi.zeoseven.com/22/main/result.css" as="style" />
+<link rel="preload" href="https://fontsapi.zeoseven.com/372/main/result.css" as="style" />
+<link rel="sitemap" href=`${BaseURL}sitemap-index.xml` />
 <link
   rel="alternate"
   type="application/rss+xml"
   title={themeConfig.site.title}
-  href={new URL('rss.xml', Astro.site)}
+  href=`${BaseURL}rss.xml`
 />
 <meta name="generator" content={Astro.generator} />
 

@@ -1,7 +1,6 @@
 import { defineConfig } from 'astro/config'
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
-import playformInline from '@playform/inline'
 import remarkMath from 'remark-math'
 import remarkDirective from 'remark-directive'
 import rehypeKatex from 'rehype-katex'
@@ -19,6 +18,7 @@ import netlify from '@astrojs/netlify'
 export default defineConfig({
   adapter: netlify(), // Set adapter for deployment, or set `linkCard` to `false` in `src/config.ts`
   site: themeConfig.site.website,
+  base: '/blog',
   image: {
     service: {
       entrypoint: 'astro/assets/services/sharp',
@@ -31,15 +31,10 @@ export default defineConfig({
       wrap: false
     },
     remarkPlugins: [remarkMath, remarkDirective, remarkEmbeddedMedia, remarkReadingTime, remarkTOC],
-    rehypePlugins: [rehypeKatex, rehypeCleanup, rehypeImageProcessor, rehypeCopyCode]
+    rehypePlugins: [rehypeKatex, rehypeCleanup, rehypeImageProcessor, rehypeCopyCode],
+    smartypants: false
   },
-  integrations: [
-    playformInline({
-      Exclude: [(file) => file.toLowerCase().includes('katex')]
-    }),
-    mdx(),
-    sitemap()
-  ],
+  integrations: [mdx(), sitemap()],
   vite: {
     resolve: {
       alias: {
@@ -49,5 +44,8 @@ export default defineConfig({
   },
   devToolbar: {
     enabled: false
+  },
+  build: {
+    inlineStylesheets: 'always'
   }
 })

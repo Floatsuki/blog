@@ -1,0 +1,4 @@
+pnpm tsc --noEmit
+pnpm astro check
+pnpm eslint
+pnpm prettier -c .

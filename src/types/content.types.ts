@@ -1,4 +1,5 @@
 // Reading time interface
+import { type CollectionEntry } from 'astro:content'
 export interface ReadingTime {
   text: string
   minutes: number

@@ -11,6 +11,7 @@ const posts = await getSortedFilteredPosts()
 <IndexLayout title={themeConfig.site.title} description={themeConfig.site.description}>
   <About />
   <main>
+    <h3>Latest Posts</h3>
     <PostList posts={posts} />
   </main>
 </IndexLayout>

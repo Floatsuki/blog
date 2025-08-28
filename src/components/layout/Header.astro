@@ -1,11 +1,12 @@
 ---
 import { themeConfig } from '@/config'
 import ThemeToggle from '@/components/ui/ThemeToggle.astro'
+const BaseURL = import.meta.env.BASE_URL
 ---
 
 <header>
   <nav>
-    <a href="/">{themeConfig.site.title}</a>
+    <a href={BaseURL}>{themeConfig.site.title}</a>
     <ThemeToggle />
   </nav>
 </header>

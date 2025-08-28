@@ -11,7 +11,7 @@ import { themeConfig } from '../config.ts'
 export default function rehypeImageProcessor() {
   return (tree) => {
     visit(tree, 'element', (node, index, parent) => {
-      if (node.tagName !== 'p') {
+      if (node.tagName !== 'p' && node.tagName !== 'th' && node.tagName !== 'td') {
         return
       }
       if (!parent || typeof index !== 'number') {
@@ -19,17 +19,18 @@ export default function rehypeImageProcessor() {
       }
 
       const imgNodes = []
-      let hasNonImageContent = false
+      // let hasNonImageContent = false
 
       for (const child of node.children) {
         if (child.type === 'element' && child.tagName === 'img') {
           imgNodes.push(child)
-        } else if (child.type !== 'text' || child.value.trim() !== '') {
-          hasNonImageContent = true
         }
+        //  else if (child.type !== 'text' || child.value.trim() !== '') {
+        //   hasNonImageContent = true
+        // }
       }
 
-      if (hasNonImageContent || imgNodes.length === 0) {
+      if (imgNodes.length === 0) {
         return
       }
 
@@ -84,8 +85,12 @@ export default function rehypeImageProcessor() {
       }
 
       if (newNodes.length > 0) {
-        parent.children.splice(index, 1, ...newNodes)
-        return index + newNodes.length - 1
+        if (node.tagName === 'th' || node.tagName === 'td') {
+          node.children = newNodes
+        } else {
+          parent.children.splice(index, 1, ...newNodes)
+          return index + newNodes.length - 1
+        }
       }
     })
   }
