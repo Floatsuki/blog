@@ -99,7 +99,11 @@ async function fixRelativeImagePaths(
  * Generate a generic Feed instance
  */
 async function generateFeedInstance(context: APIContext) {
-  const siteUrl = (context.site?.toString() || themeConfig.site.website).replace(/\/$/, '')
+  const siteOrigin = (context.site?.toString() || themeConfig.site.website).replace(/\/$/, '')
+  const siteUrl = import.meta.env.BASE_URL.endsWith('/')
+    ? `${siteOrigin}${import.meta.env.BASE_URL}`
+    : `${siteOrigin}${import.meta.env.BASE_URL}/`
+
   const { title = '', description = '', author = '', language = 'en-US' } = themeConfig.site
 
   const feed = new Feed({
@@ -155,7 +159,7 @@ async function generateFeedInstance(context: APIContext) {
     })
   }
 
-  return feed
+  return { feed, siteUrl }
 }
 
 /**
@@ -163,11 +167,11 @@ async function generateFeedInstance(context: APIContext) {
  */
 export async function generateRSS(context: APIContext) {
   const feed = await generateFeedInstance(context)
-  const rssXml = feed
+  const rssXml = feed.feed
     .rss2()
     .replace(
       '<?xml version="1.0" encoding="utf-8"?>',
-      '<?xml version="1.0" encoding="utf-8"?>\n<?xml-stylesheet type="text/xsl" href="/feeds/rss-style.xsl"?>'
+      `<?xml version="1.0" encoding="utf-8"?>\n<?xml-stylesheet type="text/xsl" href="${feed.siteUrl}feeds/rss-style.xsl"?>`
     )
   return new Response(rssXml, {
     headers: { 'Content-Type': 'application/rss+xml; charset=utf-8' }
@@ -179,11 +183,11 @@ export async function generateRSS(context: APIContext) {
  */
 export async function generateAtom(context: APIContext) {
   const feed = await generateFeedInstance(context)
-  const atomXml = feed
+  const atomXml = feed.feed
     .atom1()
     .replace(
       '<?xml version="1.0" encoding="utf-8"?>',
-      '<?xml version="1.0" encoding="utf-8"?>\n<?xml-stylesheet type="text/xsl" href="/feeds/atom-style.xsl"?>'
+      `<?xml version="1.0" encoding="utf-8"?>\n<?xml-stylesheet type="text/xsl" href="${feed.siteUrl}feeds/atom-style.xsl"?>`
     )
   return new Response(atomXml, {
     headers: { 'Content-Type': 'application/atom+xml; charset=utf-8' }
